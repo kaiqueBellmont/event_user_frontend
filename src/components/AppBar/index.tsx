@@ -15,12 +15,34 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ThemeContext from "../../context/themeContext";
+import { useNavigate } from "react-router-dom";
 
-const pages = ["Usuários", "Eventos", "Relatórios"];
+interface Page {
+  path: string;
+  placeholder: string;
+}
+
+const pages: Page[] = [
+  {
+    path: "/users",
+    placeholder: "Usuários",
+  },
+  {
+    path: "/events",
+    placeholder: "Eventos",
+  },
+  {
+    path: "/reports",
+    placeholder: "Relatórios",
+  },
+];
+
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
   const theme = React.useContext(ThemeContext);
+  const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -55,7 +77,14 @@ function ResponsiveAppBar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img src="/Logo-Freelaw-Branca.webp" alt="FreeLaw Logo" />
+          <img
+            src="/Logo-Freelaw-Branca.webp"
+            alt="FreeLaw Logo"
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -106,10 +135,10 @@ function ResponsiveAppBar() {
                   sx={{
                     display: "none ",
                   }}
-                  key={page}
+                  key={page.path}
                   onClick={handleCloseNavMenu}
                 >
-                  <Typography textAlign="center">{page}</Typography>
+                  <Typography textAlign="center">{page.placeholder}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -145,8 +174,8 @@ function ResponsiveAppBar() {
           >
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.path}
+                onClick={() => navigate(page.path)}
                 sx={{
                   color: "white",
                   borderBottom: "1px solid transparent",
@@ -158,7 +187,7 @@ function ResponsiveAppBar() {
                   transition: "border-color 0.3s ease-in-out", // Transição suave
                 }}
               >
-                {page}
+                {page.placeholder}
               </Button>
             ))}
           </Box>

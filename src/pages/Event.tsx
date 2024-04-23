@@ -1,15 +1,11 @@
 // src/pages/Home.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";
 import Footer from "../components/Footer";
-import { Box } from "@mui/material";
-import toast from "react-hot-toast";
-const Home: React.FC = () => {
-  useEffect(() => {
-    toast.success("Welcome to the Home page!");
-  }, []);
+import { Box, Typography } from "@mui/material";
 
+const Event: React.FC = () => {
   return (
     <Box
       sx={{
@@ -21,9 +17,15 @@ const Home: React.FC = () => {
     >
       <GlobalStyle />
       <AppBar />
+      <Box>
+        <Typography textAlign="center" variant="h1">
+          {" "}
+          Event Page
+        </Typography>
+      </Box>
       <Footer />
     </Box>
   );
 };
 
-export default Home;
+export default Event;

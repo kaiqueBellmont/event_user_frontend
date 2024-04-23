@@ -14,11 +14,13 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ThemeContext from "../../context/themeContext";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Usuários", "Eventos", "Relatórios"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
+  const theme = React.useContext(ThemeContext);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -45,14 +47,15 @@ function ResponsiveAppBar() {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: "#071330",
+        alignSelf: "flex-start",
+        backgroundColor: theme.darkBlue,
         color: "white",
-        boxShadow: "none",
+        boxShadow: "1px 1px 5px 1px rgba(0,0,0,0.2)",
       }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <img src="/Logo-Freelaw-Branca.webp" alt="FreeLaw Logo" />
           <Typography
             variant="h6"
             noWrap
@@ -67,9 +70,7 @@ function ResponsiveAppBar() {
               color: "inherit",
               textDecoration: "none",
             }}
-          >
-            LOGO
-          </Typography>
+          ></Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -101,7 +102,13 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  sx={{
+                    display: "none ",
+                  }}
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -126,22 +133,37 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              ":hover": {
+                cursor: "default",
+                marginBottom: "1px",
+              },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  color: "white",
+                  borderBottom: "1px solid transparent",
+                  display: "block",
+                  ":hover": {
+                    cursor: "pointer",
+                    borderBottom: "1px solid white",
+                  },
+                  transition: "border-color 0.3s ease-in-out", // Transição suave
+                }}
               >
                 {page}
               </Button>
             ))}
           </Box>
-          <MenuItem
-            sx={{
-              mr: 3,
-            }}
-          >
+
+          <Box sx={{ mr: 3 }}>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -151,7 +173,7 @@ function ResponsiveAppBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-          </MenuItem>
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

@@ -12,12 +12,15 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Badge, useMediaQuery } from "@mui/material";
+import { Badge, List, useMediaQuery } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ThemeContext from "../../context/themeContext";
 import { useNavigate } from "react-router-dom";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchBar from "@mkyy/mui-search-bar";
+import notificationsMock from "../../utils/mocks/notification";
+import AlignItem from "../Notification";
+import "/home/kaique/projects/personal/event_user_frontend/src/GlobalListStyles.css";
 
 interface Page {
   path: string;
@@ -60,11 +63,18 @@ function ResponsiveAppBar() {
     null
   );
 
+  const [anchorElNotification, setAnchorElNotification] =
+    React.useState<null | HTMLElement>(null);
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleOpenNotificationMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNotification(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -73,6 +83,10 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleCloseNotification = () => {
+    setAnchorElNotification(null);
   };
 
   return (
@@ -184,7 +198,7 @@ function ResponsiveAppBar() {
             aria-label="Filter events"
             aria-controls="filter"
             aria-haspopup="true"
-            onClick={() => {}}
+            onClick={handleOpenNotificationMenu}
             color="inherit"
           >
             <FilterAltIcon />
@@ -203,15 +217,49 @@ function ResponsiveAppBar() {
           />
 
           <Box sx={{ mr: 3 }}>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
+            <Tooltip title={"Notificações"}>
+              <IconButton
+                size="large"
+                aria-label="mostra notificações"
+                color="inherit"
+                onClick={handleOpenNotificationMenu}
+              >
+                <Badge badgeContent={notificationsMock.length} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-notifications"
+              anchorEl={anchorElNotification}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElNotification)}
+              onClose={handleCloseNotification}
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+              <List
+                dense={true}
+                sx={{
+                  width: "100%",
+                  maxWidth: 300,
+                  height: 300,
+                }}
+              >
+                {notificationsMock.map((not) => (
+                  <MenuItem key={not.id} onClick={handleCloseNotification}>
+                    <AlignItem />
+                  </MenuItem>
+                ))}
+              </List>
+            </Menu>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

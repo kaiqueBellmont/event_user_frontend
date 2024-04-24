@@ -14,12 +14,12 @@ const Event: React.FC = () => {
   const navigate = useNavigate();
 
   const params = new URLSearchParams(location.search);
-  let currentPage = Number(params.get("page")) || 1; // Se não houver "page" na URI, padrão é 1
+  let currentPage = Number(params.get("page")) || 1;
 
   const [page, setPage] = React.useState(currentPage);
   const [events, setEvents] = React.useState<any[]>([]);
   const [totalPages, setTotalPages] = React.useState(0);
-  const perPage = 3;
+  const perPage = 9;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +39,13 @@ const Event: React.FC = () => {
 
         setTotalPages(totalPages);
         setEvents(eventsForPage);
-        navigate(`?page=${page}`);
+
+        if (page > totalPages) {
+          setPage(totalPages);
+          navigate(`?page=${totalPages}`);
+        } else {
+          navigate(`?page=${page}`);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }

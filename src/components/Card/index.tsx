@@ -1,84 +1,61 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
-import Avatar from "@mui/material/Avatar";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ButtonBase from "@mui/material/ButtonBase";
 
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
+const Img = styled("img")({
+  margin: "auto",
+  display: "block",
+  maxWidth: "100%",
+  maxHeight: "100%",
+});
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
-export default function RecipeReviewCard() {
+export default function ComplexGrid(event: any) {
   return (
-    <Card sx={{ maxWidth: 320, backgroundColor: "#C3CEDA" }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: "#071330" }} aria-label="recipe">
-            K
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        color="#071330"
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
-      />
-      <CardMedia
-        component="img"
-        height="194"
-        image="/astronaut.jpg"
-        alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="#071330">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton
-          aria-label="add to favorites"
-          sx={{
-            color: "#071330",
-          }}
-        >
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton
-          aria-label="share"
-          sx={{
-            color: "#071330",
-          }}
-        >
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
+    <Paper
+      sx={{
+        p: 2,
+        margin: "auto",
+        maxWidth: 500,
+        flexGrow: 1,
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item>
+          <ButtonBase sx={{ width: 128, height: 128 }}>
+            <Img alt="complex" src="/astronaut.jpg" />
+          </ButtonBase>
+        </Grid>
+        <Grid item xs={12} sm container>
+          <Grid item xs container direction="column" spacing={2}>
+            <Grid item xs>
+              <Typography gutterBottom variant="subtitle1" component="div">
+                Standard license
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                Full resolution 1920x1080 • JPEG
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                ID: 1030114
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography sx={{ cursor: "pointer" }} variant="body2">
+                Remove
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Typography variant="subtitle1" component="div">
+              $19.00
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 }

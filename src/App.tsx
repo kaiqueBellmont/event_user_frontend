@@ -10,13 +10,6 @@ import { Helmet } from "react-helmet";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Helmet>
-        <link
-          rel="icon"
-          type="image/webp"
-          href="public/Logo-Freelaw-Branca.webp"
-        />
-      </Helmet>
       <ToastContainer />
       <Routes />
     </BrowserRouter>

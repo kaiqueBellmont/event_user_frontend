@@ -3,7 +3,7 @@ import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";
 import Footer from "../components/Footer";
 import { Box, Container } from "@mui/material";
-import RecipeReviewCard from "../components/Card";
+import EventCard from "../components/Cards/events";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import CustomPagination from "../components/Pagination";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -84,7 +84,7 @@ const Event: React.FC = () => {
           }}
         >
           {events.map((event) => (
-            <RecipeReviewCard key={event.id} event={event} />
+            <EventCard key={event.id} event={event} />
           ))}
         </Container>
         <Box

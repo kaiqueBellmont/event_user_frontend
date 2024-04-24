@@ -9,6 +9,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CloseIcon from "@mui/icons-material/Close";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CreateUserModal from "../modals/createUser";
+import CreateEventModal from "../modals/createEvent";
 
 const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
   position: "absolute",
@@ -30,13 +31,20 @@ export default function CustomSpeedDial() {
       name: "Usuario",
       actionFunc: () => setCreateUserModalOpen(true),
     },
-    { icon: <CalendarMonthIcon />, name: "Evento" },
+    {
+      icon: <CalendarMonthIcon />,
+      name: "Evento",
+      actionFunc: () => setCreateEventModalOpen(true),
+    },
     { icon: <BarChartIcon />, name: "Relatório" },
   ];
 
-  const [direction, setDirection] =
-    React.useState<SpeedDialProps["direction"]>("left");
   const [createUserModalOpen, setCreateUserModalOpen] = React.useState(false);
+  const [createEventModalOpen, setCreateEventModalOpen] = React.useState(false);
+
+  const [editUserModalOpen, seteditUserModalOpen] = React.useState(false);
+  const [editEventModalOpen, seteditEventModalOpen] = React.useState(false);
+
   const [open, setOpen] = React.useState(false);
 
   const handleOpenCloseChange = () => {
@@ -61,7 +69,7 @@ export default function CustomSpeedDial() {
       ariaLabel="SpeedDial playground example"
       hidden={false}
       icon={<SpeedDialIcon />}
-      direction={direction}
+      direction={"left"}
     >
       {actions.map((action) => (
         <SpeedDialAction
@@ -73,8 +81,13 @@ export default function CustomSpeedDial() {
         />
       ))}
       <CreateUserModal
+        setEditUserModalOpen={seteditUserModalOpen}
         createUserModalOpen={createUserModalOpen}
         setCreateUserModalOpen={setCreateUserModalOpen}
+      />
+      <CreateEventModal
+        createEventModalOpen={createEventModalOpen}
+        setCreateEventModalOpen={setCreateEventModalOpen}
       />
     </StyledSpeedDial>
   );

@@ -12,7 +12,7 @@ const Img = styled("img")({
   maxHeight: "100%",
 });
 
-export default function ComplexGrid(event: any) {
+export default function EventCard(event: any) {
   return (
     <Paper
       sx={{

@@ -2,52 +2,63 @@ const notificationsMock = [
   {
     id: 1,
     name: "Nova mensagem",
-    image: "https://example.com/notification1.jpg",
+    notifiedBy: "João",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 2,
     name: "Pedido confirmado",
-    image: "https://example.com/notification2.jpg",
+    notifiedBy: "pedro",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 3,
     name: "Promoção imperdível",
-    image: "https://example.com/notification3.jpg",
+    notifiedBy: " Carlos",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 4,
     name: "Atualização de status",
-    image: "https://example.com/notification4.jpg",
+    notifiedBy: "Joana",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 5,
     name: "Novo seguidor",
-    image: "https://example.com/notification5.jpg",
+    notifiedBy: "Carla",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 6,
     name: "Lembrete de evento",
-    image: "https://example.com/notification6.jpg",
+    notifiedBy: "Jonas",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 7,
     name: "Oferta exclusiva",
-    image: "https://example.com/notification7.jpg",
+    notifiedBy: "Carlinhos",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 8,
     name: "Novo comentário",
-    image: "https://example.com/notification8.jpg",
+    notifiedBy: "Paulo",
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 9,
     name: "Atualização de aplicativo",
-    image: "https://example.com/notification9.jpg",
+    notifiedBy: "Ana",
+
+    image: "https://picsum.photos/200/300",
   },
   {
     id: 10,
     name: "Alerta de segurança",
-    image: "https://example.com/notification10.jpg",
+    notifiedBy: "Giuberto",
+    image: "https://picsum.photos/200/300",
   },
 ];
 

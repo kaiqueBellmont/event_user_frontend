@@ -11,16 +11,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import { Badge, List, useMediaQuery } from "@mui/material";
+import { Badge, useMediaQuery } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ThemeContext from "../../context/themeContext";
 import { useNavigate } from "react-router-dom";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchBar from "@mkyy/mui-search-bar";
 import notificationsMock from "../../utils/mocks/notification";
-import AlignItem from "../Notification";
-import "/home/kaique/projects/personal/event_user_frontend/src/GlobalListStyles.css";
+import NotificationList from "../Notification";
 
 interface Page {
   path: string;
@@ -47,6 +45,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 function ResponsiveAppBar() {
   const theme = React.useContext(ThemeContext);
   const isSmallScreen = useMediaQuery("(max-width:600px)");
+  const [notifications, setNotifications] = React.useState(notificationsMock);
 
   const navigate = useNavigate();
 
@@ -111,21 +110,6 @@ function ResponsiveAppBar() {
               onClick={() => navigate("/")}
             />
           )}
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          ></Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -224,42 +208,17 @@ function ResponsiveAppBar() {
                 color="inherit"
                 onClick={handleOpenNotificationMenu}
               >
-                <Badge badgeContent={notificationsMock.length} color="error">
+                <Badge badgeContent={notifications.length} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-notifications"
-              anchorEl={anchorElNotification}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElNotification)}
-              onClose={handleCloseNotification}
-            >
-              <List
-                dense={true}
-                sx={{
-                  width: "100%",
-                  maxWidth: 300,
-                  height: 300,
-                }}
-              >
-                {notificationsMock.map((not) => (
-                  <MenuItem key={not.id} onClick={handleCloseNotification}>
-                    <AlignItem />
-                  </MenuItem>
-                ))}
-              </List>
-            </Menu>
+            <NotificationList
+              notifications={notifications}
+              setNotifications={setNotifications}
+              anchorElNotification={anchorElNotification}
+              handleCloseNotification={handleCloseNotification}
+            />
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

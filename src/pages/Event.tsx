@@ -8,6 +8,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import CustomPagination from "../components/Pagination";
 import { useNavigate, useLocation } from "react-router-dom";
 import mockEvents from "../utils/mocks/event";
+import CustomSpeedDial from "../components/Dial";
 
 const Event: React.FC = () => {
   const location = useLocation();
@@ -100,6 +101,7 @@ const Event: React.FC = () => {
             setOnFatherPage={setPage}
           />
         </Box>
+        <CustomSpeedDial />
         <Footer />
       </Box>
     </HelmetProvider>

@@ -1,48 +1,178 @@
 import * as React from "react";
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import ThemeContext from "../../context/themeContext";
+import { Box, IconButton, List, Menu, MenuItem } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import notificationsMock from "../../utils/mocks/notification";
 
-export default function AlignItem() {
+type notificationListProps = {
+  anchorElNotification: null | HTMLElement;
+  handleCloseNotification: () => void;
+  setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
+  notifications: any[];
+};
+
+export default function NotificationList(props: notificationListProps) {
+  const {
+    anchorElNotification,
+    handleCloseNotification,
+    setNotifications,
+    notifications,
+  } = props;
   const theme = React.useContext(ThemeContext);
 
+  const deleteNotification = (id: number) => {
+    const updatedNotifications = notifications.filter(
+      (notification) => notification.id !== id
+    );
+    setNotifications(updatedNotifications);
+  };
+
   return (
-    <ListItem
-      alignItems="center"
+    <Menu
       sx={{
-        backgroundColor: theme.mistyBlue,
-        height: "auto",
-        textWrap: "pretty",
-        width: "100%",
-        borderRadius: "10px",
-        padding: "10px",
+        mt: "45px",
+        "& .MuiMenu-paper": {
+          backgroundColor: theme.darkBlue,
+          scrollbarWidth: "thin",
+          scrollbarColor: "#4d4d4d #071330",
+        },
       }}
+      id="menu-notifications"
+      anchorEl={anchorElNotification}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={
+        notifications &&
+        notifications.length > 0 &&
+        Boolean(anchorElNotification)
+      }
+      onClose={handleCloseNotification}
     >
-      <ListItemAvatar>
-        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-      </ListItemAvatar>
-      <ListItemText
-        sx={{ display: "inline" }}
-        primary="Brunch this weekend?"
-        secondary={
-          <React.Fragment>
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="body2"
-              color="text.primary"
+      <List
+        dense={true}
+        sx={{
+          width: "100%",
+          maxWidth: 300,
+          maxHeight: 300,
+          padding: 0,
+        }}
+      >
+        {notifications.map((not) => (
+          <MenuItem key={not.id} onClick={() => {}}>
+            <ListItem
+              alignItems="center"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: theme.blueGray,
+                height: "auto",
+                textWrap: "pretty",
+                width: "100%",
+                borderRadius: "10px",
+                padding: "10px",
+                zIndex: 10,
+                "&:hover": {
+                  cursor: "pointer !important",
+                },
+              }}
             >
-              Ali Connors
-            </Typography>
-            {" — I'll be in your neighborhood doing errands this…"}
-          </React.Fragment>
-        }
-      />
-    </ListItem>
+              <Box
+                onClick={() => {
+                  console.log("clicked");
+                }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  "&:hover": {
+                    cursor: "pointer !important",
+                  },
+                }}
+              >
+                <ListItemAvatar
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer !important",
+                    },
+                  }}
+                >
+                  <Avatar alt="User" src={not.image} />
+                </ListItemAvatar>
+                <ListItemText
+                  sx={{
+                    display: "inline",
+                    color: "white",
+                    fontSize: "1.8rem",
+                  }}
+                  primary={
+                    <React.Fragment>
+                      <Typography
+                        sx={{
+                          display: "inline",
+                          "&:hover": {
+                            cursor: "pointer !important",
+                          },
+                          color: "white",
+                        }}
+                        component="span"
+                        variant="subtitle1"
+                        color="white"
+                      >
+                        Evento Atualizado!
+                      </Typography>
+                    </React.Fragment>
+                  }
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        sx={{
+                          display: "inline",
+                          "&:hover": {
+                            cursor: "pointer !important",
+                          },
+                          color: "white",
+                        }}
+                        component="span"
+                        variant="subtitle2"
+                        color="text.primary"
+                      >
+                        por {not.notifiedBy} at{" "}
+                        {new Date().toLocaleTimeString()}
+                      </Typography>
+                    </React.Fragment>
+                  }
+                />
+              </Box>
+              <IconButton
+                size="small"
+                aria-label="delete"
+                aria-haspopup="true"
+                onClick={() => {
+                  deleteNotification(not.id);
+                }}
+                color="inherit"
+                sx={{
+                  zIndex: 100,
+                }}
+              >
+                <DeleteIcon color="error" />
+              </IconButton>
+            </ListItem>
+          </MenuItem>
+        ))}
+      </List>
+    </Menu>
   );
 }

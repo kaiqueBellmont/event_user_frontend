@@ -2,19 +2,22 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Routes } from "./router/index";
-import { Toaster } from "react-hot-toast";
-import { CustomToaster } from "./components/CustomToaster";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import "./GlobalStyle";
+import { Helmet } from "react-helmet";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <CustomToaster>
-        <Toaster
-          position="top-right"
-          reverseOrder={true}
-          toastOptions={{ className: "react-hot-toast" }}
+      <Helmet>
+        <link
+          rel="icon"
+          type="image/webp"
+          href="public/Logo-Freelaw-Branca.webp"
         />
-      </CustomToaster>
+      </Helmet>
+      <ToastContainer />
       <Routes />
     </BrowserRouter>
   );

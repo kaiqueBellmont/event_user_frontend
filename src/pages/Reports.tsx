@@ -4,6 +4,7 @@ import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";
 import Footer from "../components/Footer";
 import { Box, Typography } from "@mui/material";
+import { Helmet } from "react-helmet";
 
 const Reports: React.FC = () => {
   return (
@@ -16,6 +17,9 @@ const Reports: React.FC = () => {
       }}
     >
       <GlobalStyle />
+      <Helmet>
+        <title>Relatórios</title>
+      </Helmet>
       <AppBar />
       <Box>
         <Typography textAlign="center" variant="h1">

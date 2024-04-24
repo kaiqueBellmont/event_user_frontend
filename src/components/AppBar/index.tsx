@@ -12,10 +12,12 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Badge } from "@mui/material";
+import { Badge, useMediaQuery } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ThemeContext from "../../context/themeContext";
 import { useNavigate } from "react-router-dom";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import SearchBar from "@mkyy/mui-search-bar";
 
 interface Page {
   path: string;
@@ -41,7 +43,15 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
   const theme = React.useContext(ThemeContext);
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
+
   const navigate = useNavigate();
+
+  const handleSearch = (value: string) => {
+    console.log(value);
+  };
+
+  const [textFieldValue, setTextFieldValue] = React.useState("");
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -77,14 +87,16 @@ function ResponsiveAppBar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img
-            src="/Logo-Freelaw-Branca.webp"
-            alt="FreeLaw Logo"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/")}
-          />
+          {!isSmallScreen && (
+            <img
+              src="/Logo-Freelaw-Branca.webp"
+              alt="FreeLaw Logo"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/")}
+            />
+          )}
           <Typography
             variant="h6"
             noWrap
@@ -131,37 +143,12 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem
-                  sx={{
-                    display: "none ",
-                  }}
-                  key={page.path}
-                  onClick={handleCloseNavMenu}
-                >
+                <MenuItem key={page.path} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{page.placeholder}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography>
           <Box
             sx={{
               flexGrow: 1,
@@ -191,6 +178,29 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
+          <IconButton
+            sx={{ mr: 2 }}
+            size="large"
+            aria-label="Filter events"
+            aria-controls="filter"
+            aria-haspopup="true"
+            onClick={() => {}}
+            color="inherit"
+          >
+            <FilterAltIcon />
+          </IconButton>
+          <SearchBar
+            value={textFieldValue}
+            onChange={(newValue) => setTextFieldValue(newValue)}
+            onSearch={() => {
+              handleSearch(textFieldValue);
+            }}
+            style={{
+              backgroundColor: "white",
+              color: "darkblue",
+              marginRigth: "10px",
+            }}
+          />
 
           <Box sx={{ mr: 3 }}>
             <IconButton
@@ -206,7 +216,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="Kaique"
+                  sx={{ bgcolor: "white", color: "#071330" }}
+                  src="/static/images/avatar/2.jpg"
+                />
               </IconButton>
             </Tooltip>
             <Menu

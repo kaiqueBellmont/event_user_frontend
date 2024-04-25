@@ -20,6 +20,8 @@ import SearchBar from "@mkyy/mui-search-bar";
 import notificationsMock from "../../utils/mocks/notification";
 import NotificationList from "../Notification";
 import Filters from "../Filter";
+import { useSelector, useDispatch } from "react-redux";
+import { addNotification, removeNotification } from "../../actions/actions";
 
 interface Page {
   path: string;
@@ -47,11 +49,24 @@ const pages: Page[] = [
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function ResponsiveAppBar(props: appBarProps) {
+function ResponsiveAppBar(props: appBarProps & any) {
   const { setFilters } = props;
   const theme = React.useContext(ThemeContext);
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const [notifications, setNotifications] = React.useState(notificationsMock);
+
+  const reduxNotifications = useSelector((state: any) => state.notifications);
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(
+      addNotification({
+        id: 1,
+        type: "success",
+      })
+    );
+    console.log(reduxNotifications);
+  };
 
   const navigate = useNavigate();
 
@@ -280,4 +295,5 @@ function ResponsiveAppBar(props: appBarProps) {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

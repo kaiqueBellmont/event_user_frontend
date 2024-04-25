@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import ThemeContext from "../../context/themeContext";
 import { Box, IconButton, List, Menu, MenuItem } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import notificationsMock from "../../utils/mocks/notification";
+import { notificationsMock } from "../../utils/mocks/notification";
 
 type notificationListProps = {
   anchorElNotification: null | HTMLElement;

@@ -10,21 +10,6 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 const Home: React.FC = () => {
   const customId = "custom-id-yes";
 
-  useEffect(() => {
-    toast.success("🦄 Wow so easy!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-      toastId: customId,
-    });
-  }, []);
-
   return (
     <HelmetProvider>
       <Box

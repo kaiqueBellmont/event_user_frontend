@@ -5,7 +5,6 @@ import { Routes } from "./router/index";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./GlobalStyle";
-import { Helmet } from "react-helmet";
 
 const App: React.FC = () => {
   return (

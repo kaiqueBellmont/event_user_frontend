@@ -17,11 +17,12 @@ import ThemeContext from "../../context/themeContext";
 import { useNavigate } from "react-router-dom";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchBar from "@mkyy/mui-search-bar";
-import notificationsMock from "../../utils/mocks/notification";
 import NotificationList from "../Notification";
 import Filters from "../Filter";
 import { useSelector, useDispatch } from "react-redux";
-import { addNotification, removeNotification } from "../../actions/actions";
+import { addNotification } from "../../actions/actions";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { Bounce, toast } from "react-toastify";
 
 interface Page {
   path: string;
@@ -53,20 +54,38 @@ function ResponsiveAppBar(props: appBarProps & any) {
   const { setFilters } = props;
   const theme = React.useContext(ThemeContext);
   const isSmallScreen = useMediaQuery("(max-width:600px)");
-  const [notifications, setNotifications] = React.useState(notificationsMock);
 
   const reduxNotifications = useSelector((state: any) => state.notifications);
   const dispatch = useDispatch();
 
+  const [notifications, setNotifications] = React.useState(reduxNotifications);
+
   const handleClick = () => {
     dispatch(
       addNotification({
-        id: 1,
-        type: "success",
+        id: 80,
+        title: "Nova mensagem",
+        description: "Você tem uma nova mensagem.",
+        type: "cancel",
       })
     );
-    console.log(reduxNotifications);
+    setNotifications(reduxNotifications);
   };
+
+  React.useEffect(() => {
+    toast.success("Nova Notificação", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+      toastId: 123,
+    });
+  }, [notifications]);
 
   const navigate = useNavigate();
 
@@ -233,6 +252,18 @@ function ResponsiveAppBar(props: appBarProps & any) {
           />
 
           <Box sx={{ mr: 3 }}>
+            <Tooltip title={"Notificações"}>
+              <IconButton
+                size="large"
+                aria-label="mostra notificações"
+                color="inherit"
+                onClick={handleClick}
+              >
+                <Badge badgeContent={notifications.length} color="error">
+                  <NotificationsActiveIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
             <Tooltip title={"Notificações"}>
               <IconButton
                 size="large"

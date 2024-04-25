@@ -9,3 +9,8 @@ export const removeNotification = (id: string) => ({
   type: "REMOVE_NOTIFICATION",
   payload: id,
 });
+
+export const addNotifications = (notifications: NotificationType[]) => ({
+  type: "ADD_NOTIFICATIONS",
+  payload: notifications,
+});

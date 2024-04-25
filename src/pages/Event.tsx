@@ -22,6 +22,8 @@ const Event: React.FC = () => {
   const [totalPages, setTotalPages] = React.useState(0);
   const perPage = 9;
 
+  const [filters, setFilters] = React.useState<any[]>([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,6 +57,10 @@ const Event: React.FC = () => {
     fetchData();
   }, [page, navigate]);
 
+  useEffect(() => {
+    console.log(filters, "no event page");
+  }, [filters]);
+
   return (
     <HelmetProvider>
       <Box
@@ -69,7 +75,7 @@ const Event: React.FC = () => {
           <title>Eventos</title>
         </Helmet>
         <GlobalStyle />
-        <AppBar />
+        <AppBar setFilters={setFilters} />
         <Container
           maxWidth={"xl"}
           sx={{
@@ -84,7 +90,7 @@ const Event: React.FC = () => {
           }}
         >
           {events.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard key={event.id} {...event} />
           ))}
         </Container>
         <Box

@@ -11,6 +11,15 @@ import CustomSpeedDial from "../components/Dial";
 import UserCard from "../components/Cards/users";
 import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
+import EditUserForm from "../components/Forms/editUserForm";
+import EditUserModal from "../components/modals/editUserModal";
+
+type userType = {
+  id: number;
+  name: string;
+  email: string;
+  avatar: string;
+};
 
 const Users: React.FC = () => {
   const location = useLocation();
@@ -22,7 +31,13 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(currentPage);
   const [users, setUsers] = React.useState<any[]>([]);
   const [totalPages, setTotalPages] = React.useState(0);
-  const perPage = 12;
+  const perPage = 8;
+
+  const [editUserModalOpen, setEditUserModalOpen] = React.useState(false);
+
+  const handleEditUserClick = () => {
+    setEditUserModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,8 +100,13 @@ const Users: React.FC = () => {
             mb: 2,
           }}
         >
-          {users.map((user) => (
-            <UserCard key={user.id} />
+          {users.map((user: userType) => (
+            <UserCard
+              key={user.id}
+              avatar={user.avatar}
+              email={user.email}
+              name={user.name}
+            />
           ))}
         </Container>
         <Box

@@ -19,11 +19,16 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchBar from "@mkyy/mui-search-bar";
 import notificationsMock from "../../utils/mocks/notification";
 import NotificationList from "../Notification";
+import Filters from "../Filter";
 
 interface Page {
   path: string;
   placeholder: string;
 }
+
+type appBarProps = {
+  setFilters?: React.Dispatch<React.SetStateAction<any>>;
+};
 
 const pages: Page[] = [
   {
@@ -42,7 +47,8 @@ const pages: Page[] = [
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props: appBarProps) {
+  const { setFilters } = props;
   const theme = React.useContext(ThemeContext);
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const [notifications, setNotifications] = React.useState(notificationsMock);
@@ -62,6 +68,9 @@ function ResponsiveAppBar() {
     null
   );
 
+  const [anchorElFilters, setAnchorElFilters] =
+    React.useState<null | HTMLElement>(null);
+
   const [anchorElNotification, setAnchorElNotification] =
     React.useState<null | HTMLElement>(null);
 
@@ -76,6 +85,10 @@ function ResponsiveAppBar() {
     setAnchorElNotification(event.currentTarget);
   };
 
+  const handleOpenFiltersMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElFilters(event.currentTarget);
+  };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -86,6 +99,10 @@ function ResponsiveAppBar() {
 
   const handleCloseNotification = () => {
     setAnchorElNotification(null);
+  };
+
+  const handleCloseFilters = () => {
+    setAnchorElFilters(null);
   };
 
   return (
@@ -182,7 +199,7 @@ function ResponsiveAppBar() {
             aria-label="Filter events"
             aria-controls="filter"
             aria-haspopup="true"
-            onClick={handleOpenNotificationMenu}
+            onClick={handleOpenFiltersMenu}
             color="inherit"
           >
             <FilterAltIcon />
@@ -218,6 +235,11 @@ function ResponsiveAppBar() {
               setNotifications={setNotifications}
               anchorElNotification={anchorElNotification}
               handleCloseNotification={handleCloseNotification}
+            />
+            <Filters
+              setFilters={setFilters}
+              handleCloseFilters={handleCloseFilters}
+              anchorElFilters={anchorElFilters}
             />
           </Box>
           <Box sx={{ flexGrow: 0 }}>

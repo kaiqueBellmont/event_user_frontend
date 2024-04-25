@@ -4,6 +4,11 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import ButtonBase from "@mui/material/ButtonBase";
+import EditEventModal from "../../modals/editEventModal";
+import { IconButton, useMediaQuery } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { eventType } from "../../../types/eventType";
+import CustomChip from "../../Chip";
 
 const Img = styled("img")({
   margin: "auto",
@@ -12,7 +17,47 @@ const Img = styled("img")({
   maxHeight: "100%",
 });
 
-export default function EventCard(event: any) {
+export default function EventCard({
+  id,
+  title,
+  description,
+  startDate,
+  endDate,
+  localization,
+  capacity,
+  startTime,
+  endTime,
+  image,
+  isActive,
+  updatedAt,
+  deletedAt,
+}: eventType) {
+  const [editEventModalOpen, setEditEventModalOpen] = React.useState(false);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log(data);
+  };
+
+  function getEventStatus() {
+    if (isActive) {
+      return "active";
+    } else if (deletedAt) {
+      return "cancel";
+    } else if (updatedAt) {
+      return "update";
+    } else {
+      return "active";
+    }
+  }
+  const type = getEventStatus();
+
+  const toggleModal = () => {
+    console.log("toggleModal");
+
+    setEditEventModalOpen(!editEventModalOpen);
+  };
+
   return (
     <Paper
       sx={{
@@ -20,6 +65,9 @@ export default function EventCard(event: any) {
         margin: "auto",
         maxWidth: 500,
         flexGrow: 1,
+        "& :hover": {
+          cursor: "pointer",
+        },
         backgroundColor: (theme) =>
           theme.palette.mode === "dark" ? "#1A2027" : "#fff",
       }}
@@ -34,28 +82,49 @@ export default function EventCard(event: any) {
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Standard license
+                Titulo do evento
               </Typography>
-              <Typography variant="body2" gutterBottom>
-                Full resolution 1920x1080 • JPEG
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ID: 1030114
+              <Typography variant="subtitle2" gutterBottom>
+                Descrição do evento
               </Typography>
             </Grid>
             <Grid item>
               <Typography sx={{ cursor: "pointer" }} variant="body2">
                 Remove
               </Typography>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={toggleModal}
+                color="inherit"
+              >
+                <EditIcon />
+              </IconButton>
             </Grid>
           </Grid>
           <Grid item>
-            <Typography variant="subtitle1" component="div">
-              $19.00
-            </Typography>
+            <CustomChip type={type} />
           </Grid>
         </Grid>
       </Grid>
+      <EditEventModal
+        editEventModalOpen={editEventModalOpen}
+        toggleModal={toggleModal}
+        event={{
+          id,
+          title,
+          description,
+          startDate,
+          endDate,
+          localization,
+          startTime,
+          endTime,
+          capacity,
+          image,
+        }}
+      />
     </Paper>
   );
 }

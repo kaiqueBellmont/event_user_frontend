@@ -1,77 +1,101 @@
-import * as React from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import Typography from "@mui/material/Typography";
-import { Avatar, Box, CardActionArea, Tooltip } from "@mui/material";
+import { Avatar, Box, CardActionArea } from "@mui/material";
 import ThemeContext from "../../../context/themeContext";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import EditUserModal from "../../modals/editUserModal";
 
-export default function UserCard() {
+type userType = {
+  id?: number;
+  name?: string;
+  email?: string;
+  avatar?: string;
+};
+
+export default function UserCard({ id, name, email, avatar }: userType) {
   const theme = React.useContext(ThemeContext);
+  const [editUserModalOpen, setEditUserModalOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setEditUserModalOpen(true);
+  };
 
   return (
-    <Tooltip title={"Clique para editar"} placement="top">
-      <Card sx={{ maxWidth: 345, bgcolor: theme.midnightBlue }}>
-        <CardActionArea>
-          <CardContent>
-            <Box
+    <Card
+      sx={{
+        cursor: "pointer",
+        minWidth: 300,
+        maxWidth: 350,
+        bgcolor: theme.darkBlue,
+      }}
+    >
+      {" "}
+      <CardActionArea onClick={handleClick}>
+        {" "}
+        <CardContent>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              alignContent: "center",
+              mb: 3,
+            }}
+          >
+            <Avatar
+              alt={name?.split(" ")[0]}
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                alignContent: "center",
-                mb: 3,
+                bgcolor: theme.mistyBlue,
+                color: theme.darkBlue,
+                height: 90,
+                width: 90,
+                mr: 2,
+              }}
+              src={avatar || ""}
+            />
+            <Typography
+              gutterBottom
+              variant="subtitle1"
+              sx={{
+                color: "#fff",
+                textWrap: "pretty",
               }}
             >
-              <Avatar
-                alt="Kaique"
-                sx={{
-                  bgcolor: theme.mistyBlue,
-                  color: theme.darkBlue,
-                  height: 56,
-                  width: 56,
-                  mr: 2,
-                }}
-                src="/static/images/avatar/2.jpg"
-              />
-              <Typography
-                gutterBottom
-                variant="subtitle1"
-                sx={{
-                  color: "#fff",
-                  textWrap: "pretty",
-                }}
-              >
-                Kaique Cairan Chaves Costa
-              </Typography>
-            </Box>
-            <Box
+              {name || "Usuário sem nome"}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+            }}
+          >
+            <MarkEmailUnreadIcon
               sx={{
-                display: "flex",
+                color: "#fff",
+                mr: 1,
               }}
-            >
-              <MarkEmailUnreadIcon
-                sx={{
-                  color: "#fff",
-                  mr: 1,
-                }}
-              />
+            />
 
-              <Typography
-                gutterBottom
-                variant="subtitle1"
-                sx={{
-                  color: "#fff",
-                  textWrap: "pretty",
-                }}
-              >
-                kaiquebellmont@gmail.com
-              </Typography>
-            </Box>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Tooltip>
+            <Typography
+              gutterBottom
+              variant="subtitle1"
+              sx={{
+                color: "#fff",
+                textWrap: "pretty",
+              }}
+            >
+              {email}
+            </Typography>
+          </Box>
+        </CardContent>
+      </CardActionArea>
+      <EditUserModal
+        user={{ name, email, avatar }}
+        editUserModalOpen={editUserModalOpen}
+        setEditUserModalOpen={setEditUserModalOpen}
+      />
+    </Card>
   );
 }

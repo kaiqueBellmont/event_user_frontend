@@ -17,26 +17,31 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { eventType } from "../../types/eventType";
+import { start } from "repl";
 
 const defaultTheme = createTheme();
 
-type createEventModalOpen = {
-  createEventModalOpen?: boolean;
-  setCreateEventModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+type editEventModalOpenType = {
+  editEventModalOpen: boolean;
+  togleModal: () => void;
+  event: eventType;
 };
 
-export default function CreateEventForm({
-  createEventModalOpen,
-  setCreateEventModalOpen,
-}: createEventModalOpen) {
+export default function EditEventForm({
+  event,
+  togleModal,
+  editEventModalOpen,
+}: editEventModalOpenType) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     console.log({
       title: data.get("title"),
       description: data.get("description"),
       localization: data.get("localization"),
+      lotation: data.get("lotation"),
       capacity: data.get("capacity"),
       startDate: data.get("start-date"),
       startTime: data.get("start-time"),
@@ -44,6 +49,32 @@ export default function CreateEventForm({
       endTime: data.get("end-time"),
     });
   };
+
+  console.log(dayjs(event.startTime));
+
+  const [formData, setFormData] = React.useState({
+    title: event.title || "",
+    description: event.description || "",
+    localization: event.localization || "",
+    capacity: event.capacity || "",
+    startDate: event.startDate || "",
+    startTime: dayjs(`${event.startDate}T${event.startTime}`),
+    endDate: event.endDate || "",
+    endTime: dayjs(`${event.endDate}T${event.endTime}`),
+  });
+
+  React.useEffect(() => {
+    setFormData({
+      title: event.title || "",
+      description: event.description || "",
+      localization: event.localization || "",
+      capacity: event.capacity || "",
+      startDate: event.startDate || "",
+      startTime: dayjs(`${event.startDate}T${event.startTime}`),
+      endDate: event.endDate || "",
+      endTime: dayjs(`${event.endDate}T${event.endTime}`),
+    });
+  }, [event]);
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const dateFiledsWidth = isSmallScreen ? 16 : 3;
@@ -87,7 +118,7 @@ export default function CreateEventForm({
                 <CalendarMonthIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Criar Evento
+                Editar Evento
               </Typography>
               <Box
                 component="form"
@@ -104,7 +135,13 @@ export default function CreateEventForm({
                       fullWidth
                       id="title"
                       label="Título"
-                      autoFocus
+                      value={formData.title}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          title: e.target.value,
+                        })
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -115,7 +152,13 @@ export default function CreateEventForm({
                       fullWidth
                       id="description"
                       label="Descrição"
-                      autoFocus
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -125,7 +168,13 @@ export default function CreateEventForm({
                       fullWidth
                       id="localization"
                       label="Local"
-                      autoFocus
+                      value={formData.localization}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          localization: e.target.value,
+                        })
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -135,8 +184,14 @@ export default function CreateEventForm({
                       fullWidth
                       id="capacity"
                       label="capacidade (de pessoas)"
-                      autoFocus
                       type="number"
+                      value={formData.capacity}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          capacity: e.target.value,
+                        })
+                      }
                     />
                   </Grid>
 
@@ -146,6 +201,7 @@ export default function CreateEventForm({
                         label="Data inicial"
                         name="start-date"
                         format="DD/MM/YYYY"
+                        value={dayjs(formData.startDate)}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -161,6 +217,8 @@ export default function CreateEventForm({
                         name="start-time"
                         label="Hora inicial"
                         ampm={false}
+                        format="HH:mm"
+                        defaultValue={formData.startTime}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -170,6 +228,7 @@ export default function CreateEventForm({
                         label="Data Final"
                         name="end-date"
                         format="DD/MM/YYYY"
+                        value={dayjs(formData.endDate)}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -185,6 +244,8 @@ export default function CreateEventForm({
                         name="end-time"
                         label="Hora Final"
                         ampm={false}
+                        format="HH:mm"
+                        defaultValue={formData.endTime}
                       />
                     </LocalizationProvider>
                   </Grid>
@@ -200,13 +261,13 @@ export default function CreateEventForm({
                   }}
                 >
                   <Fab
-                    onClick={() => setCreateEventModalOpen(false)}
+                    type="button"
+                    onClick={togleModal}
                     color={"error"}
                     sx={{ padding: "0.5rem 1rem", marginRight: "1rem" }}
                     variant="extended"
                     size="small"
                   >
-                    <DoDisturbOnIcon sx={{ color: "success" }} />
                     Cancelar
                   </Fab>
                   <Fab
@@ -220,8 +281,7 @@ export default function CreateEventForm({
                     variant="extended"
                     size="small"
                   >
-                    <AddIcon />
-                    Criar
+                    Salvar
                   </Fab>
                 </Box>
               </Box>

@@ -27,7 +27,49 @@ const Event: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = mockEvents;
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+          throw new Error("User data not found in local storage");
+        }
+        const user = JSON.parse(userData);
+        const token = user?.jwt;
+
+        if (!token) {
+          throw new Error("Token not found in local storage");
+        }
+
+        const response = await fetch("http://localhost:8000/events/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        const updatedData = data.results.map(
+          (event: {
+            start_date: any;
+            end_date: any;
+            end_time: any;
+            start_time: any;
+            occupancy: any;
+            users_registered: any;
+          }) => ({
+            ...event,
+            startDate: event.start_date,
+            endDate: event.end_date,
+            endTime: event.end_time,
+            startTime: event.start_time,
+            lotation: event.users_registered.length,
+          })
+        );
+        setEvents(updatedData);
 
         if (!data) {
           return;
@@ -35,13 +77,13 @@ const Event: React.FC = () => {
 
         const startIndex = (page - 1) * perPage;
         const endIndex = startIndex + perPage;
-        const eventsForPage = data.slice(startIndex, endIndex);
+        const usersForPage = data.slice(startIndex, endIndex);
 
-        const totalEvents = mockEvents.length;
-        const totalPages = Math.ceil(totalEvents / perPage);
+        const totalUsers = data.length;
+        const totalPages = Math.ceil(totalUsers / perPage);
 
         setTotalPages(totalPages);
-        setEvents(eventsForPage);
+        setEvents(usersForPage);
 
         if (page > totalPages) {
           setPage(totalPages);
@@ -89,7 +131,7 @@ const Event: React.FC = () => {
             mb: 2,
           }}
         >
-          {events.map((event) => (
+          {events.map((event: any) => (
             <EventCard key={event.id} {...event} />
           ))}
         </Container>

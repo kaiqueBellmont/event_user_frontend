@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -38,13 +39,36 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [response, setResponse] = React.useState<any>(null);
+  const [user, setUser] = React.useState<any>(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const data = new FormData(event.target);
+    try {
+      const res = await fetch("http://localhost:8080/users/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.get("firstName") + " " + data.get("lastName"),
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const json = await res.json();
+      setResponse(json);
+      console.log(json);
+
+      if (response) {
+        localStorage.setItem("user", JSON.stringify(response));
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

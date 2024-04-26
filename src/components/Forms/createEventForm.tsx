@@ -7,6 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper, useMediaQuery } from "@mui/material";
+import moment from "moment";
 
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
@@ -17,6 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
@@ -29,10 +31,11 @@ export default function CreateEventForm({
   createEventModalOpen,
   setCreateEventModalOpen,
 }: createEventModalOpen) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [response, setResponse] = React.useState<any>(null);
+  const navigate = useNavigate();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
     console.log({
       title: data.get("title"),
       description: data.get("description"),
@@ -43,6 +46,57 @@ export default function CreateEventForm({
       endDate: data.get("end-date"),
       endTime: data.get("end-time"),
     });
+
+    try {
+      const userData = localStorage.getItem("user");
+
+      if (!userData) {
+        throw new Error("User data not found in local storage");
+      }
+      const user = JSON.parse(userData!);
+      const token = user?.jwt;
+
+      if (!token) {
+        throw new Error("Token not found in local storage");
+      }
+
+      const formatDateString = (dateString: any) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      const formData = new FormData();
+      formData.append("title", data.get("title") || "");
+      formData.append("description", data.get("description") || "");
+      formData.append("location", data.get("localization") || "");
+      formData.append("capacity", String(data.get("capacity") || ""));
+      formData.append("start_date", moment().format("YYYY-MM-DD"));
+      formData.append("end_date", moment().format("YYYY-MM-DD"));
+      formData.append("start_time", data.get("start-time") || "");
+      formData.append("end_time", data.get("end-time") || "");
+
+      const res = await fetch("http://localhost:8000/events/", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const json = await res.json();
+      setResponse(json);
+      console.log(json);
+
+      if (response) {
+        localStorage.setItem("user", JSON.stringify(response));
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");

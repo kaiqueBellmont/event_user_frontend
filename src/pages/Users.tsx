@@ -29,7 +29,7 @@ const Users: React.FC = () => {
   let currentPage = Number(params.get("page")) || 1;
 
   const [page, setPage] = React.useState(currentPage);
-  const [users, setUsers] = React.useState<any[]>([]);
+  const [users, setUsers] = React.useState<userType[]>([]);
   const [totalPages, setTotalPages] = React.useState(0);
   const perPage = 8;
 
@@ -42,7 +42,32 @@ const Users: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = usersMock;
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+          throw new Error("User data not found in local storage");
+        }
+        const user = JSON.parse(userData);
+        const token = user?.jwt;
+
+        if (!token) {
+          throw new Error("Token not found in local storage");
+        }
+
+        const response = await fetch("http://localhost:8000/users/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+
+        setUsers(data);
 
         if (!data) {
           return;

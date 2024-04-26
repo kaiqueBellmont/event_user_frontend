@@ -13,6 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props: any) {
   return (
@@ -38,13 +39,33 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const res = await fetch("http://localhost:8000/users/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const json = await res.json();
+
+      console.log(json);
+
+      if (json) {
+        localStorage.setItem("user", JSON.stringify(json));
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

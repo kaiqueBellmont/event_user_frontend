@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
@@ -27,13 +28,37 @@ export default function CreateUserForm({
   setCreateUserModalOpen,
   setEditUserModalOpen,
 }: createUserModalOpen) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [response, setResponse] = React.useState<any>(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: any) => {
+    console.log("submit");
+
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const data = new FormData(event.target);
+    try {
+      const res = await fetch("http://localhost:8000/users/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.get("firstName") + " " + data.get("lastName"),
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const json = await res.json();
+      setResponse(json);
+      console.log(json);
+
+      if (response) {
+        localStorage.setItem("user", JSON.stringify(response));
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -153,6 +178,7 @@ export default function CreateUserForm({
                     }}
                     variant="extended"
                     size="small"
+                    type="submit"
                   >
                     <AddIcon />
                     Criar

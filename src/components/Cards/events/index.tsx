@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CelebrationIcon from "@mui/icons-material/Celebration";
 import dayjs from "dayjs";
 import Tooltip from "@mui/material/Tooltip";
+import { useNavigate } from "react-router-dom";
 
 const Img = styled("img")({
   margin: "auto",
@@ -38,11 +39,14 @@ export default function EventCard({
   deletedAt,
 }: eventType) {
   const [editEventModalOpen, setEditEventModalOpen] = React.useState(false);
+  const [response, setResponse] = React.useState<any>(null);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log(data);
   };
+  console.log(startDate, startTime, endDate, endTime);
+  const navigate = useNavigate();
 
   function getEventStatus() {
     if (isActive) {
@@ -58,13 +62,42 @@ export default function EventCard({
   const type = getEventStatus();
 
   const formatDate = (date: string, time: string) => {
-    return dayjs(`${date} ${time}`).format("DD/MM/YYYY HH:mm"); // Format date as desired
+    return dayjs(`${date} ${time}`).format("DD/MM/YYYY HH:mm");
   };
 
   const toggleModal = () => {
     console.log("toggleModal");
 
     setEditEventModalOpen(!editEventModalOpen);
+  };
+
+  const handleRegister = async () => {
+    try {
+      const userData = localStorage.getItem("user");
+
+      if (!userData) {
+        throw new Error("User data not found in local storage");
+      }
+      const user = JSON.parse(userData!);
+
+      const token = user?.jwt;
+      if (!token) {
+        throw new Error("Token not found in local storage");
+      }
+
+      const res = await fetch(`http://localhost:8000/events/${id}/register/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const json = await res.json();
+      setResponse(json);
+      console.log(json);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -182,7 +215,7 @@ export default function EventCard({
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
                   onClick={() => {
-                    console.log("delete");
+                    handleRegister();
                   }}
                   color="inherit"
                 >

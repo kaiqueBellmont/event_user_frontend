@@ -14,6 +14,8 @@ import CelebrationIcon from "@mui/icons-material/Celebration";
 import dayjs from "dayjs";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../../../utils/functions/getToken";
+import { Bounce, toast } from "react-toastify";
 
 const Img = styled("img")({
   margin: "auto",
@@ -28,7 +30,7 @@ export default function EventCard({
   description,
   startDate,
   endDate,
-  localization,
+  location,
   capacity,
   startTime,
   lotation,
@@ -45,8 +47,6 @@ export default function EventCard({
     const data = new FormData(event.currentTarget);
     console.log(data);
   };
-  console.log(startDate, startTime, endDate, endTime);
-  const navigate = useNavigate();
 
   function getEventStatus() {
     if (isActive) {
@@ -73,17 +73,7 @@ export default function EventCard({
 
   const handleRegister = async () => {
     try {
-      const userData = localStorage.getItem("user");
-
-      if (!userData) {
-        throw new Error("User data not found in local storage");
-      }
-      const user = JSON.parse(userData!);
-
-      const token = user?.jwt;
-      if (!token) {
-        throw new Error("Token not found in local storage");
-      }
+      const token = getToken();
 
       const res = await fetch(`http://localhost:8000/events/${id}/register/`, {
         method: "POST",
@@ -94,7 +84,80 @@ export default function EventCard({
       });
       const json = await res.json();
       setResponse(json);
-      console.log(json);
+      if (json.error) {
+        toast.error("Já Esta inscrito no evento!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      } else {
+        toast.success("Inscrito com sucesso!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const token = getToken();
+
+      const res = await fetch(`http://localhost:8000/events/${id}/`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.status);
+
+      if (res.status !== 204) {
+        toast.error("Falha ao deletar evento", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      } else {
+        toast.success("Evento deletado!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -133,8 +196,7 @@ export default function EventCard({
             <Grid item xs={6}>
               <Grid xs={12}>
                 <Typography sx={{ cursor: "pointer" }} variant="body2">
-                  <span style={{ fontWeight: "bold" }}>Local:</span>{" "}
-                  {localization}
+                  <span style={{ fontWeight: "bold" }}>Local:</span> {location}
                 </Typography>
                 <Typography sx={{ cursor: "pointer" }} variant="body2">
                   <span style={{ fontWeight: "bold" }}>Inicio:</span>{" "}
@@ -179,9 +241,7 @@ export default function EventCard({
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={() => {
-                    console.log("delete");
-                  }}
+                  onClick={handleDelete}
                   color="inherit"
                 >
                   <DeleteIcon
@@ -239,7 +299,7 @@ export default function EventCard({
           description,
           startDate,
           endDate,
-          localization,
+          location,
           startTime,
           endTime,
           capacity,

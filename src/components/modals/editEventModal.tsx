@@ -31,7 +31,7 @@ export default function EditEventModal({
     <Modal open={editEventModalOpen}>
       <Box sx={style}>
         <EditEventForm
-          event={event}
+          eventEntity={event}
           togleModal={toggleModal}
           editEventModalOpen={editEventModalOpen}
         />

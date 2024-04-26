@@ -20,9 +20,10 @@ import SearchBar from "@mkyy/mui-search-bar";
 import NotificationList from "../Notification";
 import Filters from "../Filter";
 import { useSelector, useDispatch } from "react-redux";
-import { addNotification } from "../../actions/actions";
+import { addNotification } from "../../actions/notificationActions";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { Bounce, toast } from "react-toastify";
+import { getToken } from "../../utils/functions/getToken";
 
 interface Page {
   path: string;

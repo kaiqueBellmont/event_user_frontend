@@ -7,6 +7,7 @@ export type eventType = {
   endTime?: string;
   endDate?: string;
   localization?: string;
+  location?: string;
   lotation?: number | string;
   capacity?: number | string;
   image?: string;

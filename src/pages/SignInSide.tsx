@@ -14,6 +14,12 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+} from "../actions/authActions";
+import { useDispatch } from "react-redux";
 
 function Copyright(props: any) {
   return (
@@ -40,10 +46,14 @@ const defaultTheme = createTheme();
 
 export default function SignInSide() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    dispatch(loginRequest());
+
     try {
       const res = await fetch("http://localhost:8000/users/login/", {
         method: "POST",
@@ -57,13 +67,15 @@ export default function SignInSide() {
       });
       const json = await res.json();
 
-      console.log(json);
-
       if (json) {
-        localStorage.setItem("user", JSON.stringify(json));
+        const token = json.jwt;
+
+        dispatch(loginSuccess(token));
+        localStorage.setItem("token", token);
         navigate("/");
       }
     } catch (error) {
+      dispatch(loginFailure(error as string));
       console.error("Error:", error);
     }
   };

@@ -1,10 +1,9 @@
-import { combineReducers } from "redux";
 import { NotificationType } from "../types/notification";
 import { notificationsMock } from "../utils/mocks/notification";
 
 const initialState: NotificationType[] = notificationsMock;
 
-const notificationsReducer = (state = initialState, action: any) => {
+export const notificationsReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case "ADD_NOTIFICATION":
       return [...state, action.payload];
@@ -18,9 +17,3 @@ const notificationsReducer = (state = initialState, action: any) => {
       return state;
   }
 };
-
-const rootReducer = combineReducers({
-  notifications: notificationsReducer,
-});
-
-export default rootReducer;

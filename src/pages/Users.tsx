@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import EditUserForm from "../components/Forms/editUserForm";
 import EditUserModal from "../components/modals/editUserModal";
+import { getToken } from "../utils/functions/getToken";
 
 type userType = {
   id: number;
@@ -42,17 +43,7 @@ const Users: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = localStorage.getItem("user");
-
-        if (!userData) {
-          throw new Error("User data not found in local storage");
-        }
-        const user = JSON.parse(userData);
-        const token = user?.jwt;
-
-        if (!token) {
-          throw new Error("Token not found in local storage");
-        }
+        const token = getToken();
 
         const response = await fetch("http://localhost:8000/users/", {
           method: "GET",
@@ -62,9 +53,6 @@ const Users: React.FC = () => {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
         const data = await response.json();
 
         setUsers(data);

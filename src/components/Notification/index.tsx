@@ -25,6 +25,8 @@ export default function NotificationList(props: notificationListProps) {
   } = props;
   const theme = React.useContext(ThemeContext);
 
+  console.log(notifications);
+
   const deleteNotification = (id: number) => {
     const updatedNotifications = notifications.filter(
       (notification) => notification.id !== id
@@ -69,7 +71,7 @@ export default function NotificationList(props: notificationListProps) {
           padding: 0,
         }}
       >
-        {notifications.map((not) => (
+        {/* {notifications.map((not) => (
           <MenuItem key={not.id} onClick={() => {}}>
             <ListItem
               alignItems="center"
@@ -171,7 +173,7 @@ export default function NotificationList(props: notificationListProps) {
               </IconButton>
             </ListItem>
           </MenuItem>
-        ))}
+        ))} */}
       </List>
     </Menu>
   );

@@ -14,6 +14,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginFailure, loginSuccess } from "../actions/authActions";
 
 function Copyright(props: any) {
   return (
@@ -42,12 +44,13 @@ export default function SignUp() {
   const [response, setResponse] = React.useState<any>(null);
   const [user, setUser] = React.useState<any>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.target);
     try {
-      const res = await fetch("http://localhost:8080/users/register/", {
+      const res = await fetch("http://localhost:8000/users/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,11 +65,14 @@ export default function SignUp() {
       setResponse(json);
       console.log(json);
 
-      if (response) {
-        localStorage.setItem("user", JSON.stringify(response));
+      if (json) {
+        const token = json.token;
+        dispatch(loginSuccess(token));
+        localStorage.setItem("token", token);
         navigate("/");
       }
     } catch (error) {
+      dispatch(loginFailure(error as string));
       console.error("Error:", error);
     }
   };

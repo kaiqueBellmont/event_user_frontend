@@ -19,6 +19,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../../utils/functions/getToken";
+import { Bounce, toast } from "react-toastify";
 
 const defaultTheme = createTheme();
 
@@ -34,39 +36,12 @@ export default function CreateEventForm({
   const [response, setResponse] = React.useState<any>(null);
   const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setCreateEventModalOpen(false);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      title: data.get("title"),
-      description: data.get("description"),
-      localization: data.get("localization"),
-      capacity: data.get("capacity"),
-      startDate: data.get("start-date"),
-      startTime: data.get("start-time"),
-      endDate: data.get("end-date"),
-      endTime: data.get("end-time"),
-    });
 
     try {
-      const userData = localStorage.getItem("user");
-
-      if (!userData) {
-        throw new Error("User data not found in local storage");
-      }
-      const user = JSON.parse(userData!);
-      const token = user?.jwt;
-
-      if (!token) {
-        throw new Error("Token not found in local storage");
-      }
-
-      const formatDateString = (dateString: any) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      };
+      const token = getToken();
 
       const formData = new FormData();
       formData.append("title", data.get("title") || "");
@@ -87,12 +62,35 @@ export default function CreateEventForm({
       });
 
       const json = await res.json();
-      setResponse(json);
-      console.log(json);
 
-      if (response) {
-        localStorage.setItem("user", JSON.stringify(response));
-        navigate("/");
+      setResponse(json);
+      if (res.status === 201) {
+        window.location.reload();
+        toast.success("Sucesso!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      } else {
+        toast.error("Verifique os dados e tente novamente", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
       }
     } catch (error) {
       console.error("Error:", error);

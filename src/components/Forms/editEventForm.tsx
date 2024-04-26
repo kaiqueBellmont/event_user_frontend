@@ -20,61 +20,116 @@ import { MobileTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { eventType } from "../../types/eventType";
 import { start } from "repl";
+import moment from "moment";
+import { getToken } from "../../utils/functions/getToken";
+import { Bounce, toast } from "react-toastify";
 
 const defaultTheme = createTheme();
 
 type editEventModalOpenType = {
   editEventModalOpen: boolean;
   togleModal: () => void;
-  event: eventType;
+  eventEntity: eventType;
 };
 
 export default function EditEventForm({
-  event,
+  eventEntity,
   togleModal,
   editEventModalOpen,
 }: editEventModalOpenType) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [response, setResponse] = React.useState<any>(null);
+  console.log(eventEntity);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    togleModal();
     const data = new FormData(event.currentTarget);
-    console.log({
-      title: data.get("title"),
-      description: data.get("description"),
-      localization: data.get("localization"),
-      lotation: data.get("lotation"),
-      capacity: data.get("capacity"),
-      startDate: data.get("start-date"),
-      startTime: data.get("start-time"),
-      endDate: data.get("end-date"),
-      endTime: data.get("end-time"),
-    });
+
+    try {
+      const token = getToken();
+
+      const formData = new FormData();
+      formData.append("title", data.get("title") || "");
+      formData.append("description", data.get("description") || "");
+      formData.append("location", data.get("localization") || "");
+      formData.append("capacity", String(data.get("capacity") || ""));
+      formData.append("start_date", moment().format("YYYY-MM-DD"));
+      formData.append("end_date", moment().format("YYYY-MM-DD"));
+      formData.append("start_time", data.get("start-time") || "");
+      formData.append("end_time", data.get("end-time") || "");
+
+      const res = await fetch(
+        `http://localhost:8000/events/${eventEntity.id}/`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      const json = await res.json();
+
+      setResponse(json);
+      if (res.status === 200) {
+        window.location.reload();
+        toast.success("Sucesso!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      } else {
+        toast.error("Verifique os dados e tente novamente", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  console.log(dayjs(event.startTime));
+  console.log(dayjs(eventEntity.startTime));
 
   const [formData, setFormData] = React.useState({
-    title: event.title || "",
-    description: event.description || "",
-    localization: event.localization || "",
-    capacity: event.capacity || "",
-    startDate: event.startDate || "",
-    startTime: dayjs(`${event.startDate}T${event.startTime}`),
-    endDate: event.endDate || "",
-    endTime: dayjs(`${event.endDate}T${event.endTime}`),
+    title: eventEntity.title || "",
+    description: eventEntity.description || "",
+    localization: eventEntity.localization || "",
+    capacity: eventEntity.capacity || "",
+    startDate: eventEntity.startDate || "",
+    startTime: dayjs(`${eventEntity.startDate}T${eventEntity.startTime}`),
+    endDate: eventEntity.endDate || "",
+    endTime: dayjs(`${eventEntity.endDate}T${eventEntity.endTime}`),
   });
 
   React.useEffect(() => {
     setFormData({
-      title: event.title || "",
-      description: event.description || "",
-      localization: event.localization || "",
-      capacity: event.capacity || "",
-      startDate: event.startDate || "",
-      startTime: dayjs(`${event.startDate}T${event.startTime}`),
-      endDate: event.endDate || "",
-      endTime: dayjs(`${event.endDate}T${event.endTime}`),
+      title: eventEntity.title || "",
+      description: eventEntity.description || "",
+      localization: eventEntity.location || "",
+      capacity: eventEntity.capacity || "",
+      startDate: eventEntity.startDate || "",
+      startTime: dayjs(`${eventEntity.startDate}T${eventEntity.startTime}`),
+      endDate: eventEntity.endDate || "",
+      endTime: dayjs(`${eventEntity.endDate}T${eventEntity.endTime}`),
     });
-  }, [event]);
+  }, [eventEntity]);
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const dateFiledsWidth = isSmallScreen ? 16 : 3;

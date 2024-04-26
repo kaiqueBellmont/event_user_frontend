@@ -14,6 +14,7 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import { useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
 
 const defaultTheme = createTheme();
 
@@ -50,11 +51,32 @@ export default function CreateUserForm({
       });
       const json = await res.json();
       setResponse(json);
-      console.log(json);
-
-      if (response) {
-        localStorage.setItem("user", JSON.stringify(response));
-        navigate("/");
+      if (json.email) {
+        toast.error(`${json.email[0]}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      } else {
+        toast.success("Criado Com sucesso!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
       }
     } catch (error) {
       console.error("Error:", error);

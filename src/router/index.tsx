@@ -10,7 +10,14 @@ import PrivateRoute from "./PrivateRoute";
 export const Routes = () => {
   return (
     <RoutesDOM>
-      <Route path="/" element={<Home />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/events"
         element={

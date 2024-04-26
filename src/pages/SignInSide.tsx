@@ -20,6 +20,8 @@ import {
   loginFailure,
 } from "../actions/authActions";
 import { useDispatch } from "react-redux";
+import { getToken } from "../utils/functions/getToken";
+import { Bounce, toast } from "react-toastify";
 
 function Copyright(props: any) {
   return (
@@ -67,9 +69,23 @@ export default function SignInSide() {
       });
       const json = await res.json();
 
-      if (json) {
+      if (json.detail) {
+        toast.error("Usuario não existe.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+        navigate("/login");
+      }
+      if (json.jwt) {
         const token = json.jwt;
-
         dispatch(loginSuccess(token));
         localStorage.setItem("token", token);
         navigate("/");

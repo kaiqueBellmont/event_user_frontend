@@ -33,8 +33,6 @@ export default function CreateUserForm({
   const navigate = useNavigate();
 
   const handleSubmit = async (event: any) => {
-    console.log("submit");
-
     event.preventDefault();
     const data = new FormData(event.target);
     try {

@@ -38,7 +38,6 @@ export default function EditEventForm({
   editEventModalOpen,
 }: editEventModalOpenType) {
   const [response, setResponse] = React.useState<any>(null);
-  console.log(eventEntity);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,10 +72,9 @@ export default function EditEventForm({
 
       setResponse(json);
       if (res.status === 200) {
-        window.location.reload();
         toast.success("Sucesso!", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -86,6 +84,7 @@ export default function EditEventForm({
           transition: Bounce,
           toastId: 123,
         });
+        window.location.reload();
       } else {
         toast.error("Verifique os dados e tente novamente", {
           position: "top-right",
@@ -104,8 +103,6 @@ export default function EditEventForm({
       console.error("Error:", error);
     }
   };
-
-  console.log(dayjs(eventEntity.startTime));
 
   const [formData, setFormData] = React.useState({
     title: eventEntity.title || "",

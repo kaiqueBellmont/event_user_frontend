@@ -7,31 +7,59 @@ import Typography from "@mui/material/Typography";
 import ThemeContext from "../../context/themeContext";
 import { Box, IconButton, List, Menu, MenuItem } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { notificationsMock } from "../../utils/mocks/notification";
+import { NotificationType } from "../../types/notification";
+import { useDispatch, useSelector } from "react-redux";
+import { getToken } from "../../utils/functions/getToken";
+import { Bounce, toast } from "react-toastify";
 
 type notificationListProps = {
   anchorElNotification: null | HTMLElement;
   handleCloseNotification: () => void;
   setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
-  notifications: any[];
+  notifications: NotificationType[];
 };
 
 export default function NotificationList(props: notificationListProps) {
-  const {
-    anchorElNotification,
-    handleCloseNotification,
-    setNotifications,
-    notifications,
-  } = props;
+  const { anchorElNotification, handleCloseNotification, notifications } =
+    props;
+
+  const dispatch = useDispatch();
+
   const theme = React.useContext(ThemeContext);
 
-  console.log(notifications);
+  const deleteNotification = async (id: number) => {
+    dispatch({ type: "REMOVE_NOTIFICATION", payload: id });
+    try {
+      const token = getToken();
 
-  const deleteNotification = (id: number) => {
-    const updatedNotifications = notifications.filter(
-      (notification) => notification.id !== id
-    );
-    setNotifications(updatedNotifications);
+      const res = await fetch(
+        `http://localhost:8000/users/notifications/${id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status !== 204) {
+        toast.error("Falha ao deletar notificação", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+          toastId: 123,
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -71,7 +99,7 @@ export default function NotificationList(props: notificationListProps) {
           padding: 0,
         }}
       >
-        {/* {notifications.map((not) => (
+        {notifications.map((not) => (
           <MenuItem key={not.id} onClick={() => {}}>
             <ListItem
               alignItems="center"
@@ -92,9 +120,6 @@ export default function NotificationList(props: notificationListProps) {
               }}
             >
               <Box
-                onClick={() => {
-                  console.log("clicked");
-                }}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -110,7 +135,7 @@ export default function NotificationList(props: notificationListProps) {
                     },
                   }}
                 >
-                  <Avatar alt="User" src={not.image} />
+                  <Avatar alt="User" src="astronaut.jpg" />
                 </ListItemAvatar>
                 <ListItemText
                   sx={{
@@ -150,7 +175,7 @@ export default function NotificationList(props: notificationListProps) {
                         variant="subtitle2"
                         color="text.primary"
                       >
-                        por {not.notifiedBy} at{" "}
+                        {not.notificationExtraData?.eventTitle} as{" "}
                         {new Date().toLocaleTimeString()}
                       </Typography>
                     </React.Fragment>
@@ -173,7 +198,7 @@ export default function NotificationList(props: notificationListProps) {
               </IconButton>
             </ListItem>
           </MenuItem>
-        ))} */}
+        ))}
       </List>
     </Menu>
   );

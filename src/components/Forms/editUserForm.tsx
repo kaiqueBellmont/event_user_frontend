@@ -37,10 +37,6 @@ export default function EditUserForm({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
   };
 
   const [formData, setFormData] = React.useState({
@@ -166,7 +162,7 @@ export default function EditUserForm({
                     size="small"
                   >
                     <DoDisturbOnIcon sx={{ color: "success" }} />
-                    Excluir
+                    Cancelar
                   </Fab>
                   <Fab
                     color="primary"

@@ -1,18 +1,13 @@
-// src/pages/Home.tsx
 import React, { useEffect } from "react";
 import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";
 import Footer from "../components/Footer";
 import { Box, Container } from "@mui/material";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import usersMock from "../utils/mocks/users";
 import CustomPagination from "../components/Pagination";
 import CustomSpeedDial from "../components/Dial";
 import UserCard from "../components/Cards/users";
 import { useLocation, useNavigate } from "react-router-dom";
-import Avatar from "@mui/material/Avatar";
-import EditUserForm from "../components/Forms/editUserForm";
-import EditUserModal from "../components/modals/editUserModal";
 import { getToken } from "../utils/functions/getToken";
 
 type userType = {

@@ -62,14 +62,8 @@ export default function SignUp() {
         }),
       });
       const json = await res.json();
-      setResponse(json);
-      console.log(json);
-
       if (json) {
-        const token = json.token;
-        dispatch(loginSuccess(token));
-        localStorage.setItem("token", token);
-        navigate("/");
+        navigate("/login");
       }
     } catch (error) {
       dispatch(loginFailure(error as string));

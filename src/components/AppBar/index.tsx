@@ -14,16 +14,19 @@ import MenuItem from "@mui/material/MenuItem";
 import { Badge, useMediaQuery } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ThemeContext from "../../context/themeContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchBar from "@mkyy/mui-search-bar";
 import NotificationList from "../Notification";
 import Filters from "../Filter";
 import { useSelector, useDispatch } from "react-redux";
-import { addNotification } from "../../actions/notificationActions";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import { Bounce, toast } from "react-toastify";
-import { getToken } from "../../utils/functions/getToken";
+import {
+  addNotifications,
+  resetNotifications,
+} from "../../actions/notificationActions";
+
+import { fetchNotificationsData } from "../../utils/functions/getNotifications";
+import { NotificationType } from "../../types/notification";
 
 interface Page {
   path: string;
@@ -52,6 +55,9 @@ const pages: Page[] = [
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar(props: appBarProps & any) {
+  const location = useLocation();
+  const isEventsPage = location.pathname === "/events";
+
   const { setFilters } = props;
   const theme = React.useContext(ThemeContext);
   const isSmallScreen = useMediaQuery("(max-width:600px)");
@@ -59,40 +65,30 @@ function ResponsiveAppBar(props: appBarProps & any) {
   const reduxNotifications = useSelector((state: any) => state.notifications);
   const dispatch = useDispatch();
 
-  const [notifications, setNotifications] = React.useState(reduxNotifications);
+  const [notifications, setNotifications] = React.useState<NotificationType[]>(
+    []
+  );
 
-  const handleClick = () => {
-    dispatch(
-      addNotification({
-        id: 80,
-        title: "Nova mensagem",
-        description: "Você tem uma nova mensagem.",
-        type: "cancel",
-      })
-    );
+  const getServerSideNotifications = async () => {
+    const data = await fetchNotificationsData();
+    dispatch(resetNotifications());
+    dispatch(addNotifications(data));
     setNotifications(reduxNotifications);
   };
 
+  const handleClick = () => {};
+
   React.useEffect(() => {
-    toast.success("Nova Notificação", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-      toastId: 123,
-    });
-  }, [notifications]);
+    setNotifications(reduxNotifications);
+  }, [reduxNotifications]);
+
+  React.useEffect(() => {
+    getServerSideNotifications();
+  }, []);
 
   const navigate = useNavigate();
 
-  const handleSearch = (value: string) => {
-    console.log(value);
-  };
+  const handleSearch = (value: string) => {};
 
   const [textFieldValue, setTextFieldValue] = React.useState("");
 
@@ -221,24 +217,26 @@ function ResponsiveAppBar(props: appBarProps & any) {
                     cursor: "pointer",
                     borderBottom: "1px solid white",
                   },
-                  transition: "border-color 0.3s ease-in-out", // Transição suave
+                  transition: "border-color 0.3s ease-in-out",
                 }}
               >
                 {page.placeholder}
               </Button>
             ))}
           </Box>
-          <IconButton
-            sx={{ mr: 2 }}
-            size="large"
-            aria-label="Filter events"
-            aria-controls="filter"
-            aria-haspopup="true"
-            onClick={handleOpenFiltersMenu}
-            color="inherit"
-          >
-            <FilterAltIcon />
-          </IconButton>
+          {isEventsPage && (
+            <IconButton
+              sx={{ mr: 2 }}
+              size="large"
+              aria-label="Filter events"
+              aria-controls="filter"
+              aria-haspopup="true"
+              onClick={handleOpenFiltersMenu}
+              color="inherit"
+            >
+              <FilterAltIcon />
+            </IconButton>
+          )}
           <SearchBar
             value={textFieldValue}
             onChange={(newValue) => setTextFieldValue(newValue)}
@@ -253,18 +251,6 @@ function ResponsiveAppBar(props: appBarProps & any) {
           />
 
           <Box sx={{ mr: 3 }}>
-            <Tooltip title={"Notificações"}>
-              <IconButton
-                size="large"
-                aria-label="mostra notificações"
-                color="inherit"
-                onClick={handleClick}
-              >
-                <Badge badgeContent={notifications.length} color="error">
-                  <NotificationsActiveIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
             <Tooltip title={"Notificações"}>
               <IconButton
                 size="large"
@@ -293,7 +279,7 @@ function ResponsiveAppBar(props: appBarProps & any) {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
-                  alt="Kaique"
+                  alt="Ryan"
                   sx={{ bgcolor: "white", color: "#071330" }}
                   src="/static/images/avatar/2.jpg"
                 />

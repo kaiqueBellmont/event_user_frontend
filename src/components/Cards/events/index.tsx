@@ -42,14 +42,9 @@ export default function EventCard({
 }: eventType) {
   const [editEventModalOpen, setEditEventModalOpen] = React.useState(false);
   const [response, setResponse] = React.useState<any>(null);
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data);
-  };
 
   function getEventStatus() {
-    if (isActive) {
+    if (isActive && !deletedAt && !updatedAt) {
       return "active";
     } else if (deletedAt) {
       return "cancel";
@@ -66,8 +61,6 @@ export default function EventCard({
   };
 
   const toggleModal = () => {
-    console.log("toggleModal");
-
     setEditEventModalOpen(!editEventModalOpen);
   };
 
@@ -128,7 +121,6 @@ export default function EventCard({
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.status);
 
       if (res.status !== 204) {
         toast.error("Falha ao deletar evento", {
@@ -194,7 +186,7 @@ export default function EventCard({
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Grid xs={12}>
+              <Grid item xs={12}>
                 <Typography sx={{ cursor: "pointer" }} variant="body2">
                   <span style={{ fontWeight: "bold" }}>Local:</span> {location}
                 </Typography>

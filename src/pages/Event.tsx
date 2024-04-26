@@ -72,14 +72,20 @@ const Event: React.FC = () => {
 
       const startIndex = (page - 1) * perPage;
       const endIndex = startIndex + perPage;
-
-      const usersForPage = data.slice(startIndex, endIndex);
-
+      let totalPages;
       const totalUsers = data.length;
-      const totalPages = Math.ceil(totalUsers / perPage);
+      let usersPerPage;
+
+      if (!(endIndex - 1 >= perPage)) {
+        const usersForPage = data.slice(startIndex, endIndex);
+        totalPages = Math.ceil(totalUsers / perPage);
+      } else {
+        totalPages = 1;
+      }
 
       setTotalPages(totalPages);
-      setEvents(usersForPage);
+
+      if (usersPerPage) setEvents(usersPerPage);
 
       if (page > totalPages) {
         setPage(totalPages);
@@ -96,9 +102,7 @@ const Event: React.FC = () => {
     fetchData();
   }, [page, navigate]);
 
-  useEffect(() => {
-    console.log(filters, "no event page");
-  }, [filters]);
+  useEffect(() => {}, [filters]);
 
   return (
     <HelmetProvider>

@@ -1,15 +1,11 @@
-// src/pages/Home.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";
 import Footer from "../components/Footer";
 import { Box, Typography } from "@mui/material";
-import { Bounce, toast } from "react-toastify";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Home: React.FC = () => {
-  const customId = "custom-id-yes";
-
   return (
     <HelmetProvider>
       <Box

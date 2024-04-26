@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import React from "react";
 import AppBar from "../components/AppBar";
 import { GlobalStyle } from "../GlobalStyle";

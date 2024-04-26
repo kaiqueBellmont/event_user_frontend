@@ -14,3 +14,7 @@ export const addNotifications = (notifications: NotificationType[]) => ({
   type: "ADD_NOTIFICATIONS",
   payload: notifications,
 });
+
+export const resetNotifications = () => ({
+  type: "RESET_NOTIFICATIONS",
+});
